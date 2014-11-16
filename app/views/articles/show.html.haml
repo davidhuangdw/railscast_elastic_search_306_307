@@ -1,0 +1,18 @@
+.page-header
+  = link_to articles_path, :class => 'btn btn-default' do
+    %span.glyphicon.glyphicon-list-alt
+    Back
+  = link_to edit_article_path(@article), :class => 'btn btn-primary' do
+    %span.glyphicon.glyphicon-pencil
+    Edit
+  %h1 Show article
+
+%dl.dl-horizontal
+  %dt Author:
+  %dd= @article.author
+  %dt Name:
+  %dd= @article.name
+  %dt Content:
+  %dd= @article.content
+  %dt Published at:
+  %dd= @article.published_at

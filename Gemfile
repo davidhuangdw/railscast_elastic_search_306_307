@@ -66,3 +66,5 @@ group :development, :test do
   gem "rb-fsevent", require: false
   gem "guard-rspec"
 end
+
+gem 'kaminari'

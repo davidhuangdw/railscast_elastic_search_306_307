@@ -1,0 +1,33 @@
+.page-header
+  = link_to new_article_path, :class => 'btn btn-primary' do
+    %span.glyphicon.glyphicon-plus
+    New Article
+  %h1 Listing articles
+
+= form_tag articles_path, method: :get do
+  = text_field_tag :search, params[:search]
+  = submit_tag 'Search'
+
+= paginate @articles
+.table-responsive
+  %table.table.table-striped.table-bordered.table-hover
+    %thead
+      %tr
+        %th Author
+        %th Name
+        %th Content
+        %th Published at
+        %th
+        %th
+        %th
+
+    %tbody
+      - @articles.each do |article|
+        %tr
+          %td= article.author.name
+          %td= article.name
+          %td= article.content
+          %td= article.published_at
+          %td= link_to 'Show', article
+          %td= link_to 'Edit', edit_article_path(article)
+          %td= link_to 'Destroy', article, :data => { confirm: 'Are you sure?' }, :method => :delete
