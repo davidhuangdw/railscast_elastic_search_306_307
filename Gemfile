@@ -68,3 +68,5 @@ group :development, :test do
 end
 
 gem 'kaminari'
+gem 'elasticsearch-model'
+gem 'elasticsearch-rails'

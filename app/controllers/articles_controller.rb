@@ -3,7 +3,7 @@ class ArticlesController < ApplicationController
   respond_to :html, :json, :js
 
   def index
-    @articles = Article.includes(:author).all.page(params[:page]).per(2)
+    @articles = Article.includes(:author).search_text(params[:search]).page(params[:page]).per(2)
 
     respond_with @articles
   end
