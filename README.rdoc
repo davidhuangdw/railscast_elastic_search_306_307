@@ -1,28 +1,59 @@
-== README
+        # facet
+        # DSL
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+        # index config
+        class Article
+          settings index: { number_of_shards: 1 } do
+            mappings dynamic: 'false' do
+              indexes :title, analyzer: 'english', index_options: 'offsets'
+            end
+          end
 
-Things you may want to cover:
+          # or
+          mapping do
+            indexes :id, type: 'integer'
+            indexes :author_id, type: 'integer'
+            indexes :author_name
+            indexes :name, boost: 10       # rank score weight
+            indexes :content, analyzer:'snowball'
+            indexes :published_at, type: 'date'
+            indexes :comments_count, type: 'integer'
+          end
+        end
 
-* Ruby version
+        # example
+        class Article
+          include Elastic...
+          scope :search_text, ->(query){ search(query).records if query }
+        end
+        # articles_controller.rb
+        def index
+          @articles = Article.includes(:author).search_text(params[:search]).page(params[:page]).per(2)
+        end
 
-* System dependencies
+        # search method
+        response = Article.search 'fox dogs'
+        response.results.total
+        response.results.first._score           # for rank
+        response.results.first._source.title    # for data
+        response.records.class                  # => ActiveRecord::Relation::ActiveRecord_Relation_Article
+        response.page(2).records
+        @articles = Article.search(params[:q]).page(params[:page]).records
 
-* Configuration
+        # models/article.rb
+        class Article
+          include Elasticsearch::Model
+          include Elasticsearch::Model::Callbacks
+        end
+        Article.import
 
-* Database creation
+        # config
+        Elasticsearch::Model.client = Elasticsearch::Client.new log: true, host:'api.example.org'
 
-* Database initialization
+        gem 'elasticsearch-model'
+        gem 'elasticsearch-rails'
 
-* How to run the test suite
+        # install & start elastic_search server
+        brew install elasticsearch
+        elasticsearch
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
