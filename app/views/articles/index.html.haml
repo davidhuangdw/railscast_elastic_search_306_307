@@ -8,6 +8,17 @@
   = text_field_tag :search, params[:search]
   = submit_tag 'Search'
 
+-##facets
+-#  %h3 Authors
+-#  %ul
+-#    - @articles.facets['authors']['terms'].each do |facet|
+-#      %li
+-#        = link_to_unless_current Author.find(facet['term']).name, params.merge(author_id:facet['term'])
+-#        - if params[:author_id] == facet['term'].to_s
+-#          = link_to 'remove', author_id:nil
+-#        - else
+-#          = facet['count']
+
 = paginate @articles
 .table-responsive
   %table.table.table-striped.table-bordered.table-hover

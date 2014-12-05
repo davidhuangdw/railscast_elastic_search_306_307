@@ -1,5 +1,71 @@
         # facet
-        # DSL
+          scope :search_text, ->(query)do
+            if query.present?
+              result = search(
+                query:{
+                  query_string:{
+                    query:query
+                  }
+                },
+                facets:{
+                  authors:{terms:{field:'author_id'}}
+                }
+              )
+            end
+          end
+
+        # index associations
+        def as_indexed_json(options={})
+          self.as_json(
+            include: { categories: { only: :title},
+                       authors:    { methods: [:full_name], only: [:full_name] },
+                       comments:   { only: :text }
+                     })
+        end
+        def author_name; author.name end
+        def as_indexed_json(options={})
+          as_json(methods: [:author_name])
+        end
+
+        # search
+        Article.search 'foo'                    # search by string
+        response = Article.search \             # search by hash arguments
+             query: {
+               match: {
+                 title: 'foo'
+               }
+             },
+             highlight: {
+               fields: {
+                 title: {}
+               }
+             }
+        Article.search '{"query" : { "match_all" : {} }}'       # by JSON string
+
+        # more dsl query
+          result = search(
+            query:{
+              query_string:{
+                  query:query
+              }
+            }
+          )
+          result = search(
+            query:{
+              query_string:{
+                  query:query
+                  fuzziness: 2,
+                  default_operator: "AND",
+                  fields:['content', 'author_name']
+              }
+            }
+          )
+
+
+        # query string
+        'fictional OR character'
+        'fictional AND character'
+        'fictional NOT character'
 
         # index config
         class Article
